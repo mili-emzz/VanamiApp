@@ -64,4 +64,5 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.fontawesomecompose)
+    implementation("com.github.StackTipsLab:custom-calendar-view:1.2.0")
 }
