@@ -1,5 +1,6 @@
 package com.emiliagomez.vanamiapp.ui.theme
 
+import AppTypography
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -52,7 +53,7 @@ fun VanamiAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
     )
 }

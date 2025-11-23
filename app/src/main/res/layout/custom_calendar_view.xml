@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+    android:padding="16dp"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buen día"
+        android:textStyle="bold"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/poppins_regular"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,9 +33,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Noviembre 2025"
-            android:textColor="#8BC34A"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/poppins_regular"
+            />
 
         <!--derecha -->
         <ImageView
@@ -46,41 +54,35 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="wrap_content"
+            style="@style/CalendarDayOfWeek"
+            android:text="Dom"/>
+        <TextView
+            style="@style/CalendarDayOfWeek"
             android:text="Lun"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="wrap_content"
+            style="@style/CalendarDayOfWeek"
             android:text="Mar"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="wrap_content"
+            style="@style/CalendarDayOfWeek"
             android:text="Mie"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="wrap_content"
+            style="@style/CalendarDayOfWeek"
             android:text="Jue"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="wrap_content"
+            style="@style/CalendarDayOfWeek"
             android:text="Vie"/>
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:text="Sab"/>
+            style="@style/CalendarDayOfWeek"
+            android:text="Dom"/>
     </LinearLayout>
 
-    </LinearLayout>
+    <GridLayout
+        android:id="@+id/id_grid_layout"
+        style="@style/CalendarDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:rowCount="6"
+        android:alignmentMode="alignBounds"
+        ></GridLayout>
+</LinearLayout>
