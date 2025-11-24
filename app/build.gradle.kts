@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime.saveable)
     implementation(libs.androidx.material3)
+    
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -65,7 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.fontawesomecompose)
-
+     implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
 
     // Sheets Compose Dialogs - solo estas dos
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.2.0")
