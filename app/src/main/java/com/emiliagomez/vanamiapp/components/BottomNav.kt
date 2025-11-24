@@ -84,7 +84,6 @@ fun BottomNav(
     // Observa el destino actual
     val navController = rememberNavController()
     val startDestination = Destination.HOME
-    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -97,8 +96,7 @@ fun BottomNav(
             NavigationBarItem(
                 onClick = {
                     navController.navigate(destination.route)
-                    selectedDestination = index
-                },
+                                },
                 icon = {
                     Icon(
                         destination.icon,
@@ -108,7 +106,7 @@ fun BottomNav(
                             .size(34.dp)
                     )
                 },
-                selected = selectedDestination == index
+                selected = isSelect
             )
         }
     }

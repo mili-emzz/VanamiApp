@@ -1,5 +1,6 @@
 package com.emiliagomez.vanamiapp.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import com.emiliagomez.vanamiapp.ui.theme.MainColor
+import com.emiliagomez.vanamiapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,7 +115,10 @@ fun formsView() {
             .background(Color.LightGray),
         contentAlignment = Alignment.Center
     ) {
-        Text("Imagen aquí", color = Color.Gray)
+        Image(
+            painter = painterResource(R.drawable.login_rafiki),
+            contentDescription = "Imagen login"
+        )
     }
 
     Spacer(modifier = Modifier.height(16.dp))
