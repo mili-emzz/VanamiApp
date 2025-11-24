@@ -2,6 +2,9 @@ package com.emiliagomez.vanamiapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val NavGray = Color(0xFFD3D3D3)
+
+val HoverColor = Color(0xFFFEB4A7)
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
