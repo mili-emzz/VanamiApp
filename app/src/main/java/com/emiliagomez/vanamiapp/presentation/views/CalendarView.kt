@@ -49,7 +49,7 @@ fun CalendarView(
                         .padding(bottom = 10.dp)
                 )
 
-                //meses
+                // Meses (colores correctos)
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier
@@ -57,15 +57,23 @@ fun CalendarView(
                         .padding(vertical = 8.dp)
                 ) {
                     listOf("Noviembre", "Diciembre", "Enero").forEach { mes ->
+                        val isSelected = mes == "Noviembre"
                         Button(
                             onClick = { /**/ },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (mes == "Noviembre") Color(0xFFF4B2B7) else Color(0xFFEAEAEA)
+                                containerColor =
+                                    if (isSelected) Color(0xFFFEB4A7) // Noviembre seleccionado
+                                    else Color.White // Diciembre y Enero fondo blanco
                             ),
                             shape = MaterialTheme.shapes.medium,
                             modifier = Modifier.weight(1f).height(36.dp)
                         ) {
-                            Text(mes, color = Color.Black)
+                            Text(
+                                mes,
+                                color =
+                                    if (isSelected) Color.White // Texto blanco en seleccionado
+                                    else Color(0xFFFEB4A7) // Texto rosa para los otros
+                            )
                         }
                     }
                 }
@@ -124,7 +132,7 @@ fun CalendarView(
                                 modifier = Modifier
                                     .size(40.dp)
                                     .background(
-                                        color = if (date == today) Color(0xFFF4B2B7) else Color(0xFFF2F2F2),
+                                        color = Color(0xFFF8F2EF), // fondo día
                                         shape = MaterialTheme.shapes.large
                                     )
                                     .clickable(enabled = date != null) {
@@ -133,7 +141,10 @@ fun CalendarView(
                                 contentAlignment = Alignment.Center
                             ) {
                                 date?.let {
-                                    Text(it.dayOfMonth.toString(), color = Color.Black)
+                                    Text(
+                                        it.dayOfMonth.toString(),
+                                        color = Color(0xFFFEB4A7) // texto día
+                                    )
                                 }
                             }
                         }
@@ -148,9 +159,6 @@ fun CalendarView(
         }
     )
 }
-
-
-
 
 
 @Composable
@@ -182,13 +190,13 @@ fun InfoContent(imageResId: Int, onDiaryClick: () -> Unit) {
         // Espacio para imagen
         Box(
             Modifier
-                .size(64.dp)
+                .size(96.dp)
         ) {
             Icon(
                 painter = painterResource(id = imageResId),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(96.dp)
             )
         }
     }

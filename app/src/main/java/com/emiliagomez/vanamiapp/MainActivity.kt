@@ -17,13 +17,12 @@ class MainActivity : ComponentActivity() {
                     onDayClick = { selectedDate ->
                         // Lógica al pulsar día
                     },
-                    imageResId = R.drawable.ic_launcher_foreground, // Cambia por tu imagen real
+                    imageResId = R.drawable.info_content,
                     onDiaryClick = {
-                        // Lógica al pulsar “Diario”
+
                     }
                 )
             }
         }
-
     }
 }
