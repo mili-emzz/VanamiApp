@@ -1,5 +1,6 @@
 package com.emiliagomez.vanamiapp.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -30,7 +31,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.emiliagomez.vanamiapp.presentation.LoginView
 import com.emiliagomez.vanamiapp.ui.theme.MainColor
 import com.emiliagomez.vanamiapp.ui.theme.NavGray
 import com.guru.fontawesomecomposelib.FaIconType

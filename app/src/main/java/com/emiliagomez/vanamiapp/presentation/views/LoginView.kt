@@ -1,6 +1,7 @@
 package com.emiliagomez.vanamiapp.presentation.views
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -21,7 +22,7 @@ import com.emiliagomez.vanamiapp.components.register.LoginImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterView(
+fun LoginView(
 ) {
     Scaffold(
         modifier = Modifier
@@ -31,10 +32,11 @@ fun RegisterView(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Únete a la comunidad",
+                        "Bienvenido de nuevo",
                         fontWeight = FontWeight.Bold,
                         fontSize = 30.sp,
-                        color = Color.Black)
+                        color = Color.Black
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
@@ -47,54 +49,41 @@ fun RegisterView(
             BottomNav()
         }
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 40.dp, vertical = 15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
+
+            Spacer(modifier = Modifier.height(2.dp))
 
             LoginImage()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
-            FormsView()
+            FormLoginView()
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(72.dp))
 
-            ButtonContainers("Registrarse", isRegister = true)
+            ButtonContainers("Iniciar Sesión", isRegister = false)
         }
     }
 }
 
 @Composable
-fun FormsView() {
-    var name by remember { mutableStateOf("") }
-    var lastname by remember { mutableStateOf("") }
+fun FormLoginView() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    var isConfirmPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-    ){
-        FormTextField(
-            name,
-            { name = it },
-            label = "Nombre"
-        )
-
-        FormTextField(
-            lastname,
-            { lastname = it },
-            label = "Apellidos"
-        )
+    ) {
 
         FormTextField(
             email,
@@ -108,22 +97,14 @@ fun FormsView() {
             label = "Contraseña",
             keyboardType = KeyboardType.Password,
             isPasswordVisible = isPasswordVisible,
-            onVisibilityChange = {isPasswordVisible = !isPasswordVisible}
+            onVisibilityChange = { isPasswordVisible = !isPasswordVisible }
         )
 
-        FormTextField(
-            confirmPassword,
-            { confirmPassword = it },
-            label = "Confirmar Contraseña",
-            keyboardType = KeyboardType.Password,
-            isPasswordVisible = isConfirmPasswordVisible,
-            onVisibilityChange = {isConfirmPasswordVisible = !isConfirmPasswordVisible}
-        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterViewPreview() {
-    RegisterView()
+fun LoginViewPreview() {
+    LoginView()
 }
