@@ -23,6 +23,7 @@ import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import com.emiliagomez.vanamiapp.ui.theme.MainColor
 import com.emiliagomez.vanamiapp.R
 import com.emiliagomez.vanamiapp.components.BottomNav
+import com.emiliagomez.vanamiapp.components.ButtonContainers
 import com.emiliagomez.vanamiapp.components.FormTextField
 import com.emiliagomez.vanamiapp.components.LoginImage
 
@@ -60,7 +61,7 @@ fun RegisterView(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 40.dp, vertical = 8.dp),
+                .padding(horizontal = 40.dp, vertical = 15.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -72,10 +73,11 @@ fun RegisterView(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            ButtonContainers()
+            ButtonContainers("Registrarse", isRegister = true)
         }
     }
 }
+
 @Composable
 fun FormsView() {
     var name by remember { mutableStateOf("") }
@@ -125,48 +127,6 @@ fun FormsView() {
             isPasswordVisible = isConfirmPasswordVisible,
             onVisibilityChange = {isConfirmPasswordVisible = !isConfirmPasswordVisible}
         )
-    }
-}
-
-@Composable
-fun ButtonContainers(
-    onRegisterClick: () -> Unit = {}
-){
-    Button(
-        onClick = onRegisterClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .clip(RoundedCornerShape(12.dp)),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MainColor
-        )
-    ) {
-        Text(
-            "Registrarse",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
-        )
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            "¿Ya tienes una cuenta? ",
-            color = Color.Gray,
-            fontSize = 14.sp
-        )
-        TextButton(onClick = { /* Navegar a login */ }) {
-            Text(
-                "Inicia sesión",
-                color = Color(0xFFD97A6E),
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-        }
     }
 }
 

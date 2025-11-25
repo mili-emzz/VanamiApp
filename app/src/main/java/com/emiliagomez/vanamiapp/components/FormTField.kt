@@ -48,8 +48,7 @@ fun FormTextField(
         onValueChange = onValueChange,
         label = {
             Text(
-                text = label,
-                style = TextStyle(textAlign = TextAlign.Start)
+                text = label
             )
         },
         modifier = Modifier
