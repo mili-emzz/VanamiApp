@@ -1,4 +1,4 @@
-package com.emiliagomez.vanamiapp.components
+package com.emiliagomez.vanamiapp.components.register
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
