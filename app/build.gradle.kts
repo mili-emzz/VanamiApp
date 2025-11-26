@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -66,9 +67,17 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.fontawesomecompose)
-     implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
 
     // Sheets Compose Dialogs - solo estas dos
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.2.0")
     implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.2.0")
+
+    //dependecias de firebase
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+    // Firestore
+    implementation("com.google.firebase:firebase-firestore")
 }
