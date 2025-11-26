@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.emiliagomez.vanamiapp.R
+import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import com.emiliagomez.vanamiapp.ui.theme.VanamiAppTheme
 import kotlin.math.cos
 import kotlin.math.sin
@@ -28,7 +29,7 @@ fun AddEmotionView(
     onNextClick: () -> Unit = {}
 ) {
     Scaffold(
-        containerColor = Color(0xFFFFF5F0),
+        containerColor = BackgroundColor,
         content = { paddingValues ->
             Column(
                 modifier = Modifier
@@ -36,31 +37,35 @@ fun AddEmotionView(
                     .padding(paddingValues)
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.Top // Alineación hacia arriba
             ) {
-                // Título arriba
+                Spacer(Modifier.height(40.dp)) // Espacio superior
+
+                // Título
                 Text(
                     text = "¿Cómo te sientes hoy?",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = Color(0xFF2C2C2C),
-                    modifier = Modifier.padding(top = 32.dp)
+                    color = Color(0xFF2C2C2C)
                 )
+
+                Spacer(Modifier.height(48.dp)) // Más espacio entre título y círculo
 
                 // Círculo de emociones
                 Box(
                     modifier = Modifier
-                        .size(320.dp)
-                        .padding(16.dp),
+                        .size(320.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     EmotionCircle(onEmotionSelected = onEmotionSelected)
                 }
 
-                // navegar entre emociones
+                Spacer(Modifier.height(24.dp)) // Espacio entre círculo y flechas
+
+                // Navegar entre emociones
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp, vertical = 16.dp),
+                        .padding(horizontal = 32.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(onClick = onBackClick) {
@@ -85,19 +90,19 @@ fun AddEmotionView(
 
 @Composable
 fun EmotionCircle(onEmotionSelected: (String) -> Unit) {
-    // lista de emociones
+    // Lista de emociones
     val emotions = listOf(
-        "Feliz" to R.drawable.ic_launcher_foreground,
-        "Triste" to R.drawable.ic_launcher_foreground,
-        "Enojado" to R.drawable.ic_launcher_foreground,
-        "Sorprendido" to R.drawable.ic_launcher_foreground,
-        "Cansado" to R.drawable.ic_launcher_foreground,
-        "Relajado" to R.drawable.ic_launcher_foreground,
-        "Ansioso" to R.drawable.ic_launcher_foreground,
-        "Emocionado" to R.drawable.ic_launcher_foreground
+        "Feliz" to R.drawable.happy,
+        "Enojado" to R.drawable.angry,
+        "Triste" to R.drawable.sad,
+        "Preocupado" to R.drawable.worried,
+        "Neutral" to R.drawable.neutral,
+        "Molesto" to R.drawable.upset,
+        "Calmado" to R.drawable.calm,
+        "Alegre" to R.drawable.joyful
     )
 
-    val radius = 140f // Radio del círculo en el que se distribuyen los iconos
+    val radius = 140f // Radio del círculo
     val angleStep = 360f / emotions.size
 
     Box(
