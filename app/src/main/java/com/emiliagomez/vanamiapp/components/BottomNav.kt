@@ -1,6 +1,8 @@
 package com.emiliagomez.vanamiapp.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.outlined.Add
@@ -22,13 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.emiliagomez.vanamiapp.ui.theme.HoverColor
+import com.emiliagomez.vanamiapp.ui.theme.MainColor
 import com.emiliagomez.vanamiapp.ui.theme.NavGray
 import com.guru.fontawesomecomposelib.FaIconType
 import com.guru.fontawesomecomposelib.FaIcons
@@ -75,11 +78,12 @@ fun AppNavHost() {
 }
 
 @Composable
-fun BottomNav(navController: NavHostController) {
+fun BottomNav(
+//    navController: NavHostController
+) {
     // Observa el destino actual
     val navController = rememberNavController()
     val startDestination = Destination.HOME
-    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -92,17 +96,24 @@ fun BottomNav(navController: NavHostController) {
             NavigationBarItem(
                 onClick = {
                     navController.navigate(destination.route)
-                    selectedDestination = index
-                },
+                                },
                 icon = {
                     Icon(
                         destination.icon,
                         contentDescription = null,
-                        tint = if (isSelect) HoverColor else NavGray
+                        tint = if (isSelect) MainColor else NavGray,
+                        modifier = Modifier
+                            .size(34.dp)
                     )
                 },
-                selected = selectedDestination == index
+                selected = isSelect
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BottomNavPreview() {
+    BottomNav()
 }
