@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -29,7 +30,7 @@ fun CalendarView(
     onDiaryClick: () -> Unit
 ) {
     Scaffold(
-        containerColor = Color(0xFFF7F6F4),
+        containerColor = BackgroundColor,
         content = { paddingValues ->
             Column(
                 modifier = Modifier
