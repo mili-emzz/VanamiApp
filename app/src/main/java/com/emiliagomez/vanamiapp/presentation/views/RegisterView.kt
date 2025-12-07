@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
-import com.emiliagomez.vanamiapp.components.NavManager.BottomNav
 import com.emiliagomez.vanamiapp.components.register.ButtonContainers
 import com.emiliagomez.vanamiapp.components.register.FormTextField
 import com.emiliagomez.vanamiapp.components.register.LoginImage
@@ -53,9 +52,6 @@ fun RegisterView(
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 2.dp)
             )
-        },
-        bottomBar = {
-            BottomNav()
         }
     ) { paddingValues ->
 
@@ -70,7 +66,7 @@ fun RegisterView(
 
             LoginImage()
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             FormsView(
                 name = name,
@@ -85,7 +81,7 @@ fun RegisterView(
                 onConfirmPasswordChange = { confirmPassword = it }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ButtonContainers(
                 text = "Registrarse",

@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
-import com.emiliagomez.vanamiapp.components.NavManager.BottomNav
 import com.emiliagomez.vanamiapp.components.register.ButtonContainers
 import com.emiliagomez.vanamiapp.components.register.FormTextField
 import com.emiliagomez.vanamiapp.components.register.LoginImage
