@@ -11,19 +11,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
-import com.emiliagomez.vanamiapp.components.BottomNav
+import com.emiliagomez.vanamiapp.components.NavManager.BottomNav
 import com.emiliagomez.vanamiapp.components.register.ButtonContainers
 import com.emiliagomez.vanamiapp.components.register.FormTextField
 import com.emiliagomez.vanamiapp.components.register.LoginImage
+import com.emiliagomez.vanamiapp.presentation.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginView(
+    loginViewModel: LoginViewModel,
+    onNavigateToRegister: () -> Unit,
+    onLoginSuccess: () -> Unit
 ) {
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -44,9 +51,6 @@ fun LoginView(
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 2.dp)
             )
-        },
-        bottomBar = {
-            BottomNav()
         }
     ) { paddingValues ->
         Column(
@@ -65,19 +69,38 @@ fun LoginView(
 
             Spacer(modifier = Modifier.height(64.dp))
 
-            FormLoginView()
+            FormLoginView(
+                email = email,
+                onEmailChange = { email = it },
+                password = password,
+                onPasswordChange = { password = it }
+            )
 
             Spacer(modifier = Modifier.height(72.dp))
 
-            ButtonContainers("Iniciar Sesión", isRegister = false)
+            ButtonContainers(
+                "Iniciar Sesión",
+                isRegister = false,
+                onButtonClick = {
+                    loginViewModel.login(
+                        email = email,
+                        password = password,
+                        onSuccess = onLoginSuccess
+                    )
+                },
+                onNavigateClick = onNavigateToRegister
+            )
         }
     }
 }
 
 @Composable
-fun FormLoginView() {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun FormLoginView(
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit
+) {
     var isPasswordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -87,24 +110,17 @@ fun FormLoginView() {
 
         FormTextField(
             email,
-            { email = it },
+            onEmailChange,
             label = "Correo eléctronico"
         )
 
         FormTextField(
             password,
-            { password = it },
+            onPasswordChange,
             label = "Contraseña",
             keyboardType = KeyboardType.Password,
             isPasswordVisible = isPasswordVisible,
             onVisibilityChange = { isPasswordVisible = !isPasswordVisible }
         )
-
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginViewPreview() {
-    LoginView()
 }

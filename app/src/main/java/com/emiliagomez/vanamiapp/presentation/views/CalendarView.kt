@@ -19,8 +19,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 
-
-
 @Composable
 fun CalendarView(
     month: Int = LocalDate.now().monthValue,
@@ -29,136 +27,133 @@ fun CalendarView(
     imageResId: Int,
     onDiaryClick: () -> Unit
 ) {
-    Scaffold(
-        containerColor = BackgroundColor,
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 12.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ///saludo, pendiente cambiar con nombre del usuario
-                Text(
-                    text = "Buen día, Vanessa",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color(0xFF2C2C2C),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp)
-                )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundColor)
+            .padding(horizontal = 12.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ///saludo, pendiente cambiar con nombre del usuario
+        Text(
+            text = "Buen día, Vanessa",
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color(0xFF2C2C2C),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+        )
 
-                // Meses (colores correctos)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+        // Meses (colores correctos)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            listOf("Noviembre", "Diciembre", "Enero").forEach { mes ->
+                val isSelected = mes == "Noviembre"
+                Button(
+                    onClick = { /**/ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor =
+                            if (isSelected) Color(0xFFFEB4A7) // Noviembre seleccionado
+                            else Color.White // Diciembre y Enero fondo blanco
+                    ),
+                    shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .weight(1f)
+                        .height(36.dp)
                 ) {
-                    listOf("Noviembre", "Diciembre", "Enero").forEach { mes ->
-                        val isSelected = mes == "Noviembre"
-                        Button(
-                            onClick = { /**/ },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor =
-                                    if (isSelected) Color(0xFFFEB4A7) // Noviembre seleccionado
-                                    else Color.White // Diciembre y Enero fondo blanco
-                            ),
-                            shape = MaterialTheme.shapes.medium,
-                            modifier = Modifier.weight(1f).height(36.dp)
-                        ) {
+                    Text(
+                        mes,
+                        color =
+                            if (isSelected) Color.White // Texto blanco en seleccionado
+                            else Color(0xFFFEB4A7) // Texto rosa para los otros
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // Días de la semana
+        val daysOfWeek = listOf("Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 6.dp, start = 8.dp, end = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            daysOfWeek.forEach { day ->
+                Text(
+                    text = day,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF424242),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+
+        Spacer(Modifier.height(4.dp))
+
+        // Calendario grid
+        val firstDayOfMonth = LocalDate.of(year, month, 1)
+        val yearMonth = YearMonth.of(year, month)
+        val daysInMonth = yearMonth.lengthOfMonth()
+        val firstDayOfWeekIndex = firstDayOfMonth.dayOfWeek.value % 7
+        val today = LocalDate.now()
+        val daysGrid = buildList {
+            repeat(firstDayOfWeekIndex) { add(null) }
+            for (day in 1..daysInMonth) {
+                add(LocalDate.of(year, month, day))
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White, shape = MaterialTheme.shapes.medium)
+                .padding(16.dp)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(7),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+            ) {
+                items(daysGrid) { date ->
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                color = Color(0xFFF8F2EF), // fondo día
+                                shape = MaterialTheme.shapes.large
+                            )
+                            .clickable(enabled = date != null) {
+                                date?.let { onDayClick(it) }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        date?.let {
                             Text(
-                                mes,
-                                color =
-                                    if (isSelected) Color.White // Texto blanco en seleccionado
-                                    else Color(0xFFFEB4A7) // Texto rosa para los otros
+                                it.dayOfMonth.toString(),
+                                color = Color(0xFFFEB4A7) // texto día
                             )
                         }
                     }
                 }
-
-                Spacer(Modifier.height(12.dp))
-
-                // Días de la semana
-                val daysOfWeek = listOf("Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab")
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 6.dp, start = 8.dp, end = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    daysOfWeek.forEach { day ->
-                        Text(
-                            text = day,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF424242),
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(4.dp))
-
-                // Calendario grid
-                val firstDayOfMonth = LocalDate.of(year, month, 1)
-                val yearMonth = YearMonth.of(year, month)
-                val daysInMonth = yearMonth.lengthOfMonth()
-                val firstDayOfWeekIndex = firstDayOfMonth.dayOfWeek.value % 7
-                val today = LocalDate.now()
-                val daysGrid = buildList {
-                    repeat(firstDayOfWeekIndex) { add(null) }
-                    for (day in 1..daysInMonth) {
-                        add(LocalDate.of(year, month, day))
-                    }
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White, shape = MaterialTheme.shapes.medium)
-                        .padding(16.dp)
-                ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(7),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(240.dp)
-                    ) {
-                        items(daysGrid) { date ->
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .background(
-                                        color = Color(0xFFF8F2EF), // fondo día
-                                        shape = MaterialTheme.shapes.large
-                                    )
-                                    .clickable(enabled = date != null) {
-                                        date?.let { onDayClick(it) }
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                date?.let {
-                                    Text(
-                                        it.dayOfMonth.toString(),
-                                        color = Color(0xFFFEB4A7) // texto día
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Spacer(Modifier.height(24.dp))
-
-                InfoContent(imageResId = imageResId, onDiaryClick = onDiaryClick)
-                Spacer(Modifier.height(16.dp))
             }
         }
-    )
+
+        Spacer(Modifier.height(24.dp))
+
+        InfoContent(imageResId = imageResId, onDiaryClick = onDiaryClick)
+        Spacer(Modifier.height(16.dp))
+    }
 }
 
 
