@@ -1,6 +1,7 @@
 package com.emiliagomez.vanamiapp.presentation.views
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
@@ -26,84 +28,92 @@ fun RegisterView(
     onNavigateToLogin: () -> Unit = {},
     onRegisterSuccess: () -> Unit = {}
 ) {
-    // para capturar los valores de los TextFields
     var name by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    Scaffold(
+    var passwordMismatch by remember { mutableStateOf(false) }
+
+
+    Column(
         modifier = Modifier
-            .fillMaxSize(),
-        containerColor = BackgroundColor,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "Únete a la comunidad",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color.Black)
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 2.dp)
-            )
-        }
-    ) { paddingValues ->
+            .fillMaxSize()
+            .background(BackgroundColor)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 40.dp)
+            .imePadding(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        Column(
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            "Únete a la comunidad",
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            color = Color.Black,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 40.dp, vertical = 15.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+                .padding(bottom = 12.dp),
+            textAlign = TextAlign.Center
+        )
 
+        Box(modifier = Modifier.size(140.dp)) {
             LoginImage()
+        }
 
-            Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-            FormsView(
-                name = name,
-                onNameChange = { name = it },
-                username = username,
-                onUsernameChange = { username = it },
-                email = email,
-                onEmailChange = { email = it },
-                password = password,
-                onPasswordChange = { password = it },
-                confirmPassword = confirmPassword,
-                onConfirmPasswordChange = { confirmPassword = it }
-            )
+        FormsView(
+            name = name,
+            onNameChange = { name = it },
+            username = username,
+            onUsernameChange = { username = it },
+            email = email,
+            onEmailChange = { email = it },
+            password = password,
+            onPasswordChange = { password = it },
+            confirmPassword = confirmPassword,
+            onConfirmPasswordChange = { confirmPassword = it }
+        )
 
-            Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            ButtonContainers(
-                text = "Registrarse",
-                isRegister = true,
-                onButtonClick = {
-                    if (password == confirmPassword) {
-                        loginViewModel.createUser(
-                            email = email,
-                            password = password,
-                            name = name,
-                            username = username,
-                            onSuccess = onRegisterSuccess
-                        )
-                    } else {
-                        Log.d("RegisterView", "Las contraseñas no coinciden")
-                    }
-                },
-                onNavigateClick = onNavigateToLogin
+        if(passwordMismatch){
+            Text(
+                text = "Las contraseñas no coinciden",
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
         }
+
+        val allFieldsFilled = name.isNotBlank() && username.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
+
+        ButtonContainers(
+            text = "Registrarse",
+            isRegister = true,
+            onButtonClick = {
+                if (password == confirmPassword) {
+                    passwordMismatch = false
+                    loginViewModel.createUser(
+                        email = email,
+                        password = password,
+                        name = name,
+                        username = username,
+                        onSuccess = onRegisterSuccess
+                    )
+                } else {
+                    passwordMismatch = true
+                    Log.d("RegisterView", "Las contraseñas no coinciden")
+                }
+            },
+            onNavigateClick = onNavigateToLogin
+        )
     }
 }
+
 
 @Composable
 fun FormsView(
@@ -124,7 +134,7 @@ fun FormsView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-    ){
+    ) {
         FormTextField(
             value = name,
             onValueChange = onNameChange,
