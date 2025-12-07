@@ -1,5 +1,6 @@
 package com.emiliagomez.vanamiapp.presentation.views
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -10,19 +11,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
-import com.emiliagomez.vanamiapp.components.BottomNav
 import com.emiliagomez.vanamiapp.components.register.ButtonContainers
 import com.emiliagomez.vanamiapp.components.register.FormTextField
 import com.emiliagomez.vanamiapp.components.register.LoginImage
+import com.emiliagomez.vanamiapp.presentation.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterView(
+    loginViewModel: LoginViewModel,
+    onNavigateToLogin: () -> Unit = {},
+    onRegisterSuccess: () -> Unit = {}
 ) {
+    // para capturar los valores de los TextFields
+    var name by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -42,9 +52,6 @@ fun RegisterView(
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 2.dp)
             )
-        },
-        bottomBar = {
-            BottomNav()
         }
     ) { paddingValues ->
 
@@ -59,24 +66,58 @@ fun RegisterView(
 
             LoginImage()
 
+            Spacer(modifier = Modifier.height(4.dp))
+
+            FormsView(
+                name = name,
+                onNameChange = { name = it },
+                username = username,
+                onUsernameChange = { username = it },
+                email = email,
+                onEmailChange = { email = it },
+                password = password,
+                onPasswordChange = { password = it },
+                confirmPassword = confirmPassword,
+                onConfirmPasswordChange = { confirmPassword = it }
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
 
-            FormsView()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ButtonContainers("Registrarse", isRegister = true)
+            ButtonContainers(
+                text = "Registrarse",
+                isRegister = true,
+                onButtonClick = {
+                    if (password == confirmPassword) {
+                        loginViewModel.createUser(
+                            email = email,
+                            password = password,
+                            name = name,
+                            username = username,
+                            onSuccess = onRegisterSuccess
+                        )
+                    } else {
+                        Log.d("RegisterView", "Las contraseñas no coinciden")
+                    }
+                },
+                onNavigateClick = onNavigateToLogin
+            )
         }
     }
 }
 
 @Composable
-fun FormsView() {
-    var name by remember { mutableStateOf("") }
-    var lastname by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+fun FormsView(
+    name: String,
+    onNameChange: (String) -> Unit,
+    username: String,
+    onUsernameChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    confirmPassword: String,
+    onConfirmPasswordChange: (String) -> Unit
+) {
     var isPasswordVisible by remember { mutableStateOf(false) }
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
 
@@ -85,45 +126,41 @@ fun FormsView() {
             .fillMaxSize()
     ){
         FormTextField(
-            name,
-            { name = it },
+            value = name,
+            onValueChange = onNameChange,
             label = "Nombre"
         )
 
         FormTextField(
-            lastname,
-            { lastname = it },
-            label = "Apellidos"
+            value = username,
+            onValueChange = onUsernameChange,
+            label = "Nombre de usuario"
         )
 
         FormTextField(
-            email,
-            { email = it },
-            label = "Correo eléctronico"
+            value = email,
+            onValueChange = onEmailChange,
+            label = "Correo electrónico"
         )
 
         FormTextField(
-            password,
-            { password = it },
+            value = password,
+            onValueChange = onPasswordChange,
             label = "Contraseña",
             keyboardType = KeyboardType.Password,
+            isPassword = true,
             isPasswordVisible = isPasswordVisible,
-            onVisibilityChange = {isPasswordVisible = !isPasswordVisible}
+            onVisibilityChange = { isPasswordVisible = !isPasswordVisible }
         )
 
         FormTextField(
-            confirmPassword,
-            { confirmPassword = it },
+            value = confirmPassword,
+            onValueChange = onConfirmPasswordChange,
             label = "Confirmar Contraseña",
             keyboardType = KeyboardType.Password,
+            isPassword = true,
             isPasswordVisible = isConfirmPasswordVisible,
-            onVisibilityChange = {isConfirmPasswordVisible = !isConfirmPasswordVisible}
+            onVisibilityChange = { isConfirmPasswordVisible = !isConfirmPasswordVisible }
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterViewPreview() {
-    RegisterView()
 }
