@@ -125,14 +125,16 @@ fun ProfileAuthenticatedView(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            TextButton(
+            Button(
                 onClick = {
                     onNavigateToFav()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White)
-            ) {
+                    .padding(vertical = 4.dp),
+                shape = RoundedCornerShape(20.dp),
+                ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     tint = MainColor,
@@ -143,7 +145,6 @@ fun ProfileAuthenticatedView(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MainColor,
-                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
 
