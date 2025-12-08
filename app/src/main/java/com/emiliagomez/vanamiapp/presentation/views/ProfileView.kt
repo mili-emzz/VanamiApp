@@ -131,10 +131,12 @@ fun ProfileAuthenticatedView(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(vertical = 4.dp),
+                    .height(50.dp),
                 shape = RoundedCornerShape(20.dp),
-                ) {
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White
+                )
+            ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     tint = MainColor,
