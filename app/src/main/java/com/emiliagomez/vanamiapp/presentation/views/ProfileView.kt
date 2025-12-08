@@ -131,6 +131,7 @@ fun ProfileAuthenticatedView(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Color.White)
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
@@ -141,7 +142,8 @@ fun ProfileAuthenticatedView(
                     text = "Ir a favoritos",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MainColor
+                    color = MainColor,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
 
