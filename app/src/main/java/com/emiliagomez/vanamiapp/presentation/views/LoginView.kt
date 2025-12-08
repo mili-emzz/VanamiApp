@@ -1,7 +1,6 @@
 package com.emiliagomez.vanamiapp.presentation.views
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -30,68 +29,57 @@ fun LoginView(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Scaffold(
+    Column(
         modifier = Modifier
-            .fillMaxSize(),
-        containerColor = BackgroundColor,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "Bienvenido de nuevo",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color.Black
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 2.dp)
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .imePadding()
+            .padding(horizontal = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-            Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        Text(
+            "Bienvenido de nuevo",
+            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(modifier = Modifier.size(160.dp)) {
             LoginImage()
-
-            Spacer(modifier = Modifier.height(64.dp))
-
-            FormLoginView(
-                email = email,
-                onEmailChange = { email = it },
-                password = password,
-                onPasswordChange = { password = it }
-            )
-
-            Spacer(modifier = Modifier.height(72.dp))
-
-            ButtonContainers(
-                "Iniciar Sesión",
-                isRegister = false,
-                onButtonClick = {
-                    loginViewModel.login(
-                        email = email,
-                        password = password,
-                        onSuccess = onLoginSuccess
-                    )
-                },
-                onNavigateClick = onNavigateToRegister
-            )
         }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        FormLoginView(
+            email = email,
+            onEmailChange = { email = it },
+            password = password,
+            onPasswordChange = { password = it }
+        )
+
+        Spacer(modifier = Modifier.height(72.dp))
+
+        ButtonContainers(
+            "Iniciar Sesión",
+            isRegister = false,
+            onButtonClick = {
+                loginViewModel.login(
+                    email = email,
+                    password = password,
+                    onSuccess = onLoginSuccess
+                )
+            },
+            onNavigateClick = onNavigateToRegister
+        )
     }
 }
+
 
 @Composable
 fun FormLoginView(
@@ -116,6 +104,7 @@ fun FormLoginView(
         FormTextField(
             password,
             onPasswordChange,
+            isPassword = true,
             label = "Contraseña",
             keyboardType = KeyboardType.Password,
             isPasswordVisible = isPasswordVisible,
