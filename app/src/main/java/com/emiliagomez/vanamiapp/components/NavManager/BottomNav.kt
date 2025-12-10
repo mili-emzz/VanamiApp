@@ -13,15 +13,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.emiliagomez.vanamiapp.R
-import com.emiliagomez.vanamiapp.components.NavManager.routes.Destination
 import com.emiliagomez.vanamiapp.components.NavManager.routes.AuthRoutes
+import com.emiliagomez.vanamiapp.components.NavManager.routes.Destination
 import com.emiliagomez.vanamiapp.presentation.viewmodels.LoginViewModel
+import com.emiliagomez.vanamiapp.presentation.viewmodels.RecordViewModel
 import com.emiliagomez.vanamiapp.presentation.views.*
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import com.emiliagomez.vanamiapp.ui.theme.MainColor
@@ -32,6 +34,7 @@ fun MainScreen(
     loginViewModel: LoginViewModel
 ) {
     val navController = rememberNavController()
+    val recordViewModel: RecordViewModel = viewModel()
 
     Scaffold(
         containerColor = BackgroundColor,
@@ -42,16 +45,23 @@ fun MainScreen(
         AppNavHost(
             navController = navController,
             loginViewModel = loginViewModel,
-            innerPadding = innerPadding,
+            recordViewModel = recordViewModel,
+            innerPadding = innerPadding
         )
     }
 }
 
-// navegacion principal
+// Rutas adicionales para el flujo de registro
+object RecordRoutes {
+    const val RECORD_EMOTION = "record_emotion"
+    const val RECORD_HABIT = "record_habit"
+}
+
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
+    recordViewModel: RecordViewModel,
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues
 ) {
@@ -60,34 +70,83 @@ fun AppNavHost(
         startDestination = Destination.CALENDAR.route,
         modifier = modifier
     ) {
-        composable(Destination.HOME.route) {
-            // HomeView()
-        }
-
+        // CALENDARIO
         composable(Destination.CALENDAR.route) {
             CalendarView(
+                recordViewModel = recordViewModel,
                 onDayClick = { selectedDate ->
-                    // Lógica al pulsar día
                     Log.d("CalendarView", "Día seleccionado: $selectedDate")
+
+                    if (loginViewModel.isUserAuthenticated()) {
+                        // Navegar al registro de emoción para ese día
+                        navController.navigate(RecordRoutes.RECORD_EMOTION)
+                    } else {
+                        navController.navigate(AuthRoutes.REGISTER)
+                    }
                 },
                 imageResId = R.drawable.info_content,
                 onDiaryClick = {
-                    // Verificar si está autenticado antes de ir al diario
                     if (loginViewModel.isUserAuthenticated()) {
-                        // Navegar a la vista de diario
-                        // navController.navigate("diary")
+                        // Ir al registro del día actual
+                        navController.navigate(RecordRoutes.RECORD_EMOTION)
                     } else {
-                        // Mostrar mensaje o ir a login
                         navController.navigate(AuthRoutes.REGISTER)
                     }
                 }
             )
         }
 
-        composable(Destination.ADD.route) {
-            // AddView() - Vista para subir emociones
+        // REGISTRO DE EMOCIÓN
+        composable(RecordRoutes.RECORD_EMOTION) {
             if (loginViewModel.isUserAuthenticated()) {
-                // Mostrar vista de agregar emoción
+                RecordEmotionView(
+                    recordViewModel = recordViewModel,
+                    onContinueClick = {
+                        // Continuar al registro de hábitos
+                        navController.navigate(RecordRoutes.RECORD_HABIT)
+                    }
+                )
+            } else {
+                LaunchedEffect(Unit) {
+                    navController.navigate(AuthRoutes.REGISTER) {
+                        popUpTo(Destination.CALENDAR.route) { inclusive = false }
+                    }
+                }
+            }
+        }
+
+        // REGISTRO DE HÁBITOS
+        composable(RecordRoutes.RECORD_HABIT) {
+            if (loginViewModel.isUserAuthenticated()) {
+                RecordHabitView(
+                    recordViewModel = recordViewModel,
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onSaveSuccess = {
+                        // Volver al calendario después de guardar
+                        navController.navigate(Destination.CALENDAR.route) {
+                            popUpTo(Destination.CALENDAR.route) { inclusive = true }
+                        }
+                    }
+                )
+            } else {
+                LaunchedEffect(Unit) {
+                    navController.navigate(AuthRoutes.REGISTER) {
+                        popUpTo(Destination.CALENDAR.route) { inclusive = false }
+                    }
+                }
+            }
+        }
+
+        // TAB ADD (para acceso rápido)
+        composable(Destination.ADD.route) {
+            if (loginViewModel.isUserAuthenticated()) {
+                LaunchedEffect(Unit) {
+                    navController.navigate(RecordRoutes.RECORD_EMOTION) {
+                        popUpTo(Destination.CALENDAR.route) { inclusive = false }
+                    }
+                }
             } else {
                 LaunchedEffect(Unit) {
                     navController.navigate(AuthRoutes.REGISTER)
@@ -96,16 +155,20 @@ fun AppNavHost(
         }
 
         composable(Destination.FAVORITES.route) {
-            // FavoritesView() - Vista de favoritos
             if (loginViewModel.isUserAuthenticated()) {
-                // Mostrar favoritos
+                // falta implementarla bien jeje, no le piques pq explota
+                CalendarView(
+                    recordViewModel = recordViewModel,
+                    onDayClick = {},
+                    imageResId = R.drawable.info_content,
+                    onDiaryClick = {}
+                )
             } else {
                 LaunchedEffect(Unit) {
                     navController.navigate(AuthRoutes.REGISTER)
                 }
             }
         }
-
         composable(Destination.PROFILE.route) {
             val isAuthenticated = loginViewModel.isUserAuthenticated()
 
@@ -129,6 +192,8 @@ fun AppNavHost(
                         navController.navigate(AuthRoutes.LOGIN)
                     },
                     onRegisterSuccess = {
+
+                        recordViewModel.loadUserRecords()
                         navController.navigate(Destination.PROFILE.route) {
                             popUpTo(Destination.PROFILE.route) { inclusive = true }
                         }
@@ -144,6 +209,7 @@ fun AppNavHost(
                     navController.popBackStack()
                 },
                 onLoginSuccess = {
+                    recordViewModel.loadUserRecords()
                     navController.navigate(Destination.PROFILE.route) {
                         popUpTo(AuthRoutes.LOGIN) { inclusive = true }
                     }
@@ -158,6 +224,7 @@ fun AppNavHost(
                     navController.navigate(AuthRoutes.LOGIN)
                 },
                 onRegisterSuccess = {
+                    recordViewModel.loadUserRecords()
                     navController.navigate(Destination.PROFILE.route) {
                         popUpTo(AuthRoutes.REGISTER) { inclusive = true }
                     }
@@ -172,16 +239,18 @@ fun BottomNav(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val showBottomNav = currentRoute in Destination.entries.map { it.route }
+    val hideBottomNav = currentRoute in listOf(
+        RecordRoutes.RECORD_EMOTION,
+        RecordRoutes.RECORD_HABIT
+    )
 
-    if (showBottomNav || currentRoute in listOf(AuthRoutes.LOGIN, AuthRoutes.REGISTER)) {
+    if (!hideBottomNav) {
         NavigationBar(
             containerColor = Color.White
         ) {
             Destination.entries.forEach { destination ->
                 val isSelected = when {
-                    // Si estamos en Login/Register y es el tab de PROFILE, marcarlo como seleccionado
-                    currentRoute in listOf(AuthRoutes.LOGIN, AuthRoutes.REGISTER)  && destination == Destination.PROFILE -> true
+                    currentRoute in listOf(AuthRoutes.LOGIN, AuthRoutes.REGISTER) && destination == Destination.PROFILE -> true
                     currentRoute == AuthRoutes.PROFILE_AUTHENTICATED && destination == Destination.PROFILE -> true
                     else -> currentRoute == destination.route
                 }
@@ -191,7 +260,6 @@ fun BottomNav(navController: NavHostController) {
                     onClick = {
                         if (currentRoute != destination.route) {
                             navController.navigate(destination.route) {
-                                // Limpiar el stack hasta la ruta de inicio
                                 popUpTo(Destination.CALENDAR.route) {
                                     saveState = true
                                 }

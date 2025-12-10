@@ -14,19 +14,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.emiliagomez.vanamiapp.R
+import com.emiliagomez.vanamiapp.presentation.viewmodels.RecordViewModel
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import java.time.LocalDate
 import java.time.YearMonth
-
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun CalendarView(
-    month: Int = LocalDate.now().monthValue,
-    year: Int = LocalDate.now().year,
+    recordViewModel: RecordViewModel,
     onDayClick: (LocalDate) -> Unit = {},
     imageResId: Int,
     onDiaryClick: () -> Unit
 ) {
+    var currentMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
+    var currentYear by remember { mutableStateOf(LocalDate.now().year) }
+
+    // Calcular los 3 meses a mostrar
+    val currentDate = LocalDate.of(currentYear, currentMonth, 1)
+    val previousMonth = currentDate.minusMonths(1)
+    val nextMonth = currentDate.plusMonths(1)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +45,6 @@ fun CalendarView(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ///saludo, pendiente cambiar con nombre del usuario
         Text(
             text = "Buen día, Vanessa",
             style = MaterialTheme.typography.headlineSmall,
@@ -45,21 +54,25 @@ fun CalendarView(
                 .padding(bottom = 10.dp)
         )
 
-        // Meses (colores correctos)
+        // Botones de meses
         Row(
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
         ) {
-            listOf("Noviembre", "Diciembre", "Enero").forEach { mes ->
-                val isSelected = mes == "Noviembre"
+            listOf(previousMonth, currentDate, nextMonth).forEach { month ->
+                val isSelected = month.monthValue == currentMonth && month.year == currentYear
+                val monthName = month.month.getDisplayName(TextStyle.FULL, Locale("es", "ES"))
+                    .replaceFirstChar { it.uppercase() }
+
                 Button(
-                    onClick = { /**/ },
+                    onClick = {
+                        currentMonth = month.monthValue
+                        currentYear = month.year
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor =
-                            if (isSelected) Color(0xFFFEB4A7) // Noviembre seleccionado
-                            else Color.White // Diciembre y Enero fondo blanco
+                        containerColor = if (isSelected) Color(0xFFFEB4A7) else Color.White
                     ),
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
@@ -67,10 +80,9 @@ fun CalendarView(
                         .height(36.dp)
                 ) {
                     Text(
-                        mes,
-                        color =
-                            if (isSelected) Color.White // Texto blanco en seleccionado
-                            else Color(0xFFFEB4A7) // Texto rosa para los otros
+                        monthName,
+                        color = if (isSelected) Color.White else Color(0xFFFEB4A7),
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
@@ -98,16 +110,17 @@ fun CalendarView(
 
         Spacer(Modifier.height(4.dp))
 
-        // Calendario grid
-        val firstDayOfMonth = LocalDate.of(year, month, 1)
-        val yearMonth = YearMonth.of(year, month)
+        // Grid del calendario
+        val firstDayOfMonth = LocalDate.of(currentYear, currentMonth, 1)
+        val yearMonth = YearMonth.of(currentYear, currentMonth)
         val daysInMonth = yearMonth.lengthOfMonth()
         val firstDayOfWeekIndex = firstDayOfMonth.dayOfWeek.value % 7
         val today = LocalDate.now()
+
         val daysGrid = buildList {
             repeat(firstDayOfWeekIndex) { add(null) }
             for (day in 1..daysInMonth) {
-                add(LocalDate.of(year, month, day))
+                add(LocalDate.of(currentYear, currentMonth, day))
             }
         }
 
@@ -126,23 +139,39 @@ fun CalendarView(
                     .height(240.dp)
             ) {
                 items(daysGrid) { date ->
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = Color(0xFFF8F2EF), // fondo día
-                                shape = MaterialTheme.shapes.large
-                            )
-                            .clickable(enabled = date != null) {
-                                date?.let { onDayClick(it) }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        date?.let {
-                            Text(
-                                it.dayOfMonth.toString(),
-                                color = Color(0xFFFEB4A7) // texto día
-                            )
+                    if (date != null) {
+                        val emotion = recordViewModel.getEmotionForDate(date)
+                        val isToday = date == today
+
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = if (isToday) Color(0xFFFEB4A7) else Color(0xFFF8F2EF),
+                                    shape = MaterialTheme.shapes.large
+                                )
+                                .clickable {
+                                    recordViewModel.loadRecordForDate(date)
+                                    onDayClick(date)
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (emotion != null && emotion.imgUrl.isNotEmpty()) {
+                                // Mostrar emoción registrada
+                                val resourceId = emotion.imgUrl.toIntOrNull() ?: R.drawable.happy
+                                Icon(
+                                    painter = painterResource(id = resourceId),
+                                    contentDescription = emotion.name,
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            } else {
+                                // Mostrar número del día
+                                Text(
+                                    date.dayOfMonth.toString(),
+                                    color = if (isToday) Color.White else Color(0xFFFEB4A7)
+                                )
+                            }
                         }
                     }
                 }
@@ -155,7 +184,6 @@ fun CalendarView(
         Spacer(Modifier.height(16.dp))
     }
 }
-
 
 @Composable
 fun InfoContent(imageResId: Int, onDiaryClick: () -> Unit) {
@@ -175,7 +203,8 @@ fun InfoContent(imageResId: Int, onDiaryClick: () -> Unit) {
             Button(
                 onClick = onDiaryClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFFB7B7), contentColor = Color.White
+                    containerColor = Color(0xFFFFB7B7),
+                    contentColor = Color.White
                 ),
                 shape = MaterialTheme.shapes.medium
             ) {
@@ -183,11 +212,7 @@ fun InfoContent(imageResId: Int, onDiaryClick: () -> Unit) {
             }
         }
         Spacer(Modifier.width(12.dp))
-        // Espacio para imagen
-        Box(
-            Modifier
-                .size(96.dp)
-        ) {
+        Box(Modifier.size(96.dp)) {
             Icon(
                 painter = painterResource(id = imageResId),
                 contentDescription = null,

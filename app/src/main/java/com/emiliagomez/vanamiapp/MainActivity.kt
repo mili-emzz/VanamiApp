@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.emiliagomez.vanamiapp.navigation.AppNavHost
 import com.emiliagomez.vanamiapp.navigation.BottomNav
+import com.emiliagomez.vanamiapp.navigation.MainScreen
 import com.emiliagomez.vanamiapp.presentation.viewmodels.LoginViewModel
+import com.emiliagomez.vanamiapp.presentation.viewmodels.RecordViewModel
 import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import com.emiliagomez.vanamiapp.ui.theme.VanamiAppTheme
 
@@ -30,7 +32,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(loginViewModel: LoginViewModel) {
+fun MainScreen(loginViewModel: LoginViewModel,  recordViewModel: RecordViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -42,6 +44,7 @@ fun MainScreen(loginViewModel: LoginViewModel) {
         AppNavHost(
             navController = navController,
             loginViewModel = loginViewModel,
+            recordViewModel = recordViewModel,
             modifier = Modifier.padding(innerPadding),
             innerPadding = innerPadding
         )
