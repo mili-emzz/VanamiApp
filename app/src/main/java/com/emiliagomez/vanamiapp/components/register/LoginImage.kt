@@ -18,7 +18,7 @@ import com.emiliagomez.vanamiapp.R
 fun LoginImage(){
     Box(
         modifier = Modifier
-            .size(200.dp)
+            .size(220.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.LightGray),
         contentAlignment = Alignment.Center

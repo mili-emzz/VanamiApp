@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emiliagomez.vanamiapp.ui.theme.MainColor
@@ -24,14 +25,16 @@ import com.emiliagomez.vanamiapp.ui.theme.MainColor
 @Composable
 fun ButtonContainers(
     text: String,
-    isRegister: Boolean
+    isRegister: Boolean,
+    onButtonClick: () -> Unit,
+    onNavigateClick: () -> Unit
 ){
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         Button(
-            onClick = {},
+            onClick = onButtonClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -45,7 +48,8 @@ fun ButtonContainers(
                 text = text,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
             )
         }
         Row(
@@ -59,7 +63,8 @@ fun ButtonContainers(
                 fontSize = 14.sp
             )
             TextButton(
-                onClick = { /* Navegacion */ }){
+                onClick = onNavigateClick
+            ){
                 Text(
                     text = if (isRegister) "Inicar Sesión" else "Registrarse",
                     color = Color(0xFFD97A6E),
