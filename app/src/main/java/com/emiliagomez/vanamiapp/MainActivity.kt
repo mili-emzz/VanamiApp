@@ -4,7 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.emiliagomez.vanamiapp.presentation.views.CalendarView
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import com.emiliagomez.vanamiapp.navigation.AppNavHost
+import com.emiliagomez.vanamiapp.navigation.BottomNav
+import com.emiliagomez.vanamiapp.presentation.viewmodels.LoginViewModel
+import com.emiliagomez.vanamiapp.ui.theme.BackgroundColor
 import com.emiliagomez.vanamiapp.ui.theme.VanamiAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,16 +22,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VanamiAppTheme {
-                CalendarView(
-                    onDayClick = { selectedDate ->
-                        // Lógica al pulsar día
-                    },
-                    imageResId = R.drawable.info_content,
-                    onDiaryClick = {
-
-                    }
-                )
+                val loginViewModel: LoginViewModel by viewModels()
+                MainScreen(loginViewModel = loginViewModel)
             }
         }
+    }
+}
+
+@Composable
+fun MainScreen(loginViewModel: LoginViewModel) {
+    val navController = rememberNavController()
+
+    Scaffold(
+        containerColor = BackgroundColor,
+        bottomBar = {
+            BottomNav(navController = navController)
+        }
+    ) { innerPadding ->
+        AppNavHost(
+            navController = navController,
+            loginViewModel = loginViewModel,
+            modifier = Modifier.padding(innerPadding),
+            innerPadding = innerPadding
+        )
     }
 }

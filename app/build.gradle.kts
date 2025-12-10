@@ -62,8 +62,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    val nav_version = "2.9.6"
-
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.fontawesomecompose)
@@ -80,4 +78,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     // Firestore
     implementation("com.google.firebase:firebase-firestore")
+    // Add the dependency for the Firebase Authentication library
+    implementation("com.google.firebase:firebase-auth")
 }
